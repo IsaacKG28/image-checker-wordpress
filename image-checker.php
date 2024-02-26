@@ -1,10 +1,11 @@
 <?php
 /*
 Plugin Name: Image Checker
-Description: Deshabilita el botón de publicar en productos de WooCommerce si no hay imágenes en la galería.
+Description: Plugin que verifica la existencia de imágenes en la galería para publicar productos nuevos con status de 'Publicado'
 Version: 1.0
 Author: Fernando Isaac Gonzalez Medina
 */
+//LOGICA PARA BEAR BULK 
 //Acción que cambia un producto publicado a borrador si no tiene imágenes
 add_action('save_post', 'check_product_images', 10, 3);
 function check_product_images($post_id, $post, $update) {
@@ -18,7 +19,6 @@ function check_product_images($post_id, $post, $update) {
         }
     }
 }
-//Parte que hookea correctamente BEAR para cambiar el status en tiempo real
 add_filter('woobe_new_product_status', function ($status) {
     // Verificar si la galería está vacía
     if (empty(get_post_gallery(get_the_ID(), false))) {
@@ -29,7 +29,9 @@ add_filter('woobe_new_product_status', function ($status) {
         return $status;
     }
 });
+//AQUI TERMINA LA LOGICA DE BEAR BULK 
 
+//AQUI EMPIEZA LOGICA PARA PRODUCTOS 1 POR 1 PARA WOOCOMMERCE
 add_action('admin_footer', 'disable_publish_button');
 function disable_publish_button() {
     global $post;
@@ -77,6 +79,8 @@ function disable_publish_button() {
         <?php
     }
 }
+//TERMINA LOGICA PARA PRODUCTOS DE WOOCOMMERCE
+
 //JS para ventana modal
 add_action('admin_enqueue_scripts', 'enqueue_my_custom_popup_script');
 function enqueue_my_custom_popup_script() {
@@ -95,6 +99,5 @@ function my_custom_popup() {
                 <p class = "text-modal">Recuerda que si pones como "Publicado" un artículo sin imágenes en la galería, éste se cambiará automáticamente a "Borrador".</p>
               </div>';
     }
-//TEST VERSION
 }
 ?> 
