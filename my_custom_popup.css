@@ -1,0 +1,17 @@
+#TB_window.thickbox-loading {
+    width: 700px !important;
+    height: 200px !important;
+    margin-top: 100px !important;
+    background-color: red !important;
+    color: white !important;
+    font-weight: 900 !important;
+}
+
+.text-modal{
+    font-size: 1rem !important;
+    text-align: center !important;
+}
+
+#TB_ajaxWindowTitle{
+    color: red;
+}
