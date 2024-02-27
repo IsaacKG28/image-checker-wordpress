@@ -53,4 +53,3 @@ function disable_publish_button() {
         <?php
     }
 }
-?> 
