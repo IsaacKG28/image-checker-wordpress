@@ -1,36 +1,10 @@
 <?php
 /*
 Plugin Name: Image Checker
-Description: Plugin que verifica la existencia de imágenes en la galería para publicar productos nuevos con status de 'Publicado'
+Description: Plugin que verifica la existencia de imágenes en la galería del producto para que se pueda habilitar el botón de publicar.
 Version: 1.0
 Author: Fernando Isaac Gonzalez Medina
 */
-//LOGICA PARA BEAR BULK 
-//Acción que cambia un producto publicado a borrador si no tiene imágenes
-add_action('save_post', 'check_product_images', 10, 3);
-function check_product_images($post_id, $post, $update) {
-    if ($post->post_type == 'product' && $post->post_status == 'publish') {
-        $product = wc_get_product($post_id);
-        $attachment_ids = $product->get_gallery_image_ids();
-        if (empty($attachment_ids)) {
-            // Cambiamos el estado a 'Borrador'
-            $post->post_status = 'draft';
-            wp_update_post($post);
-        }
-    }
-}
-add_filter('woobe_new_product_status', function ($status) {
-    // Verificar si la galería está vacía
-    if (empty(get_post_gallery(get_the_ID(), false))) {
-        // La galería está vacía, establecer el estado como 'draft'
-        return 'draft';
-    } else {
-        // La galería no está vacía, mantener el estado actual
-        return $status;
-    }
-});
-//AQUI TERMINA LA LOGICA DE BEAR BULK 
-
 //AQUI EMPIEZA LOGICA PARA PRODUCTOS 1 POR 1 PARA WOOCOMMERCE
 add_action('admin_footer', 'disable_publish_button');
 function disable_publish_button() {
@@ -77,27 +51,6 @@ function disable_publish_button() {
             });
         </script>
         <?php
-    }
-}
-//TERMINA LOGICA PARA PRODUCTOS DE WOOCOMMERCE
-
-//JS para ventana modal
-add_action('admin_enqueue_scripts', 'enqueue_my_custom_popup_script');
-function enqueue_my_custom_popup_script() {
-    $screen = get_current_screen();
-    if ( $screen->id == "product_page_woobe" ) {
-        wp_enqueue_script('my_custom_popup_script', plugins_url('/my_custom_popup.js', __FILE__), array('jquery', 'thickbox'), false, true);
-         // Enqueueing CSS file
-         wp_enqueue_style('my_custom_popup_style', plugins_url('/my_custom_popup.css', __FILE__));
-    }
-}
-add_action('admin_footer', 'my_custom_popup');
-function my_custom_popup() {
-    $screen = get_current_screen();
-    if ( $screen->id == "product_page_woobe") {
-        echo '<div id="my_custom_popup">
-                <p class = "text-modal">Recuerda que si pones como "Publicado" un artículo sin imágenes en la galería, éste se cambiará automáticamente a "Borrador".</p>
-              </div>';
     }
 }
 ?> 
